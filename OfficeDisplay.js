@@ -16,12 +16,20 @@ displayGraph(x, y, "Testing", ["X-Axis", "Y-Axis"]);
 /*
 Generates and displays a graph for power or energy outputs.
 Parameters:
-  x - an array of unnormalized x values, often corresponding to a daily or monthly time in this context
-  y - an array of unnormalized y values, often corresponding to power or energy in this context
-  title - the title of the graph
-  labels - an array of the axis labels where index 0 is x-axis and index 1 is y-axis
+  _x1 - an array of unnormalized x values, often corresponding to a daily or monthly time in this context (actuals)
+  _y1 - an array of unnormalized y values, often corresponding to power or energy in this context (actuals)
+  _title - the title of the graph
+  _labels - an array of the axis labels where index 0 is x-axis and index 1 is y-axis
+  mini - the index of the mini graph this one is, set to -1 to set as main graph
+  _x2 - an array of unnormalized x values, often corresponding to a daily or monthly time in this context (expected)
+  _y2 - an array of unnormalized y values, often corresponding to power or energy in this context (expected)
 */
-function displayGraph(_x1, _y1, _title, _labels, _x2, _y2) {
+function displayGraph(_x1, _y1, _title, _labels, mini, _x2, _y2) {
+  if (mini < 0 || mini > 9 || mini === undefined)
+    mini = 'main';
+  else
+    mini = '' + mini;
+
   var set1 = {      //must be used as an array in Plotly.newPlot (even if only dataset)
     x: _x1,
     y: _y1,
@@ -57,7 +65,7 @@ function displayGraph(_x1, _y1, _title, _labels, _x2, _y2) {
     height: $(window).height() * config.heightFactor
   }
 
-  Plotly.newPlot('main', data, layout);
+  Plotly.newPlot(mini, data, layout);
 }
 
 //Cycles through the history folder on the ftp server (just a test function for image display and local access)

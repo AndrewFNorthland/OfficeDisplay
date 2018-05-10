@@ -21,14 +21,27 @@ Parameters:
   title - the title of the graph
   labels - an array of the axis labels where index 0 is x-axis and index 1 is y-axis
 */
-function displayGraph(_x, _y, _title, _labels) {
+function displayGraph(_x1, _y1, _title, _labels, _x2, _y2) {
   var set1 = {      //must be used as an array in Plotly.newPlot (even if only dataset)
-    x: _x,
-    y: _y,
+    x: _x1,
+    y: _y1,
     type: 'scatter'
   }
 
-  var data = [set1];      //The array of all datasets for the current graph
+  var set2;
+  if (_x2) {
+    set2 = {      //must be used as an array in Plotly.newPlot (even if only dataset)
+      x: _x2,
+      y: _y2,
+      type: 'scatter'
+    }
+  }
+
+  var data;
+  if (set2)
+    data = [set1, set2];      //The array of all datasets for the current graph
+  else
+    data = [set1];
 
   var layout = {      //The specified layout of the current graph
     title: _title,

@@ -77,16 +77,18 @@ Parameters:
   _y1 - an array of unnormalized y values, often corresponding to power or energy in this context (actuals)
   _title - the title of the graph
   _labels - an array of the axis labels where index 0 is x-axis and index 1 is y-axis
+  update - true or false, whether this function is updating a graph or creating it
   mini - the index of the mini graph this one is, set to -1 to set as main graph
   _x2 - an array of unnormalized x values, often corresponding to a daily or monthly time in this context (expected)
   _y2 - an array of unnormalized y values, often corresponding to power or energy in this context (expected)
 */
-function displayGraph(_x1, _y1, _title, _labels, mini, _x2, _y2) {
-  if (mini < 0 || mini > 9 || mini === undefined)
+function displayGraph(_x1, _y1, _title, _labels, update, mini, _x2, _y2) {
+  if (mini < 0 || mini > 9 || mini === undefined)     //Determining if creating a mini graph or not
     mini = 'main';
   else
     mini = '' + mini;
 
+  //set1 and set2 are data sets
   var set1 = {      //must be used as an array in Plotly.newPlot (even if only dataset)
     x: _x1,
     y: _y1,
@@ -96,7 +98,7 @@ function displayGraph(_x1, _y1, _title, _labels, mini, _x2, _y2) {
   }
 
   var set2;
-  if (_x2) {
+  if (_x2) {      //only setting set2 if there is data for it
     set2 = {      //must be used as an array in Plotly.newPlot (even if only dataset)
       x: _x2,
       y: _y2,
@@ -106,48 +108,110 @@ function displayGraph(_x1, _y1, _title, _labels, mini, _x2, _y2) {
     }
   }
 
-  var data;
-  if (set2)
-    data = [set1, set2];      //The array of all datasets for the current graph
+  var data;      //The array of all datasets for the current graph
+  if (set2)     //only putting set2 into the data array if it exists
+    data = [set1, set2];
   else
     data = [set1];
 
   var layout;
   if (mini == "main") {
-    layout = {      //The specified layout of the current graph
-      title: _title,
-      xaxis: {
-        title: _labels[0],
-        showline: true,
-        zeroline: false,
-        showgrid: config.showGrid
-      },
-      yaxis: {
-        title: _labels[1],
-        showline: true,
-        zeroline: false,
-        showgrid: config.showGrid
-      },
-      width: $(window).width() * config.widthFactor,
-      height: $(window).height() * config.heightFactor
-    }
+    layout = mainLayout(_title, _labels);
   } else {
-    layout = {
-      title: _title,
-      xaxis: {
-        showline: true,
-        zeroline: false,
-        showgrid: false
-      },
-      yaxis: {
-        showline: true,
-        zeroline: false,
-        showgrid: false
-      },
-      width: $(window).width() * config.widthMiniFactor,
-      height: $(window).width() * config.heightMiniFactor
-    }
+    layout = miniLayout(_title);
   }
 
-  Plotly.newPlot(mini, data, layout);
+  if (update) {
+    Plotly.react(mini, data, layout);
+  } else {
+    Plotly.newPlot(mini, data, layout);
+  }
+}
+
+function mainLayout(_title, _labels) {
+  return {
+    title: _title,
+    titlefont: {
+      color: config.textColour
+    },
+    plot_bgcolor: '#000000',
+    paper_bgcolor: '#000000',
+    margin: {
+      l: 75,
+      r: 50,
+      t: 50,
+      b: 50
+    },
+    xaxis: {
+      title: _labels[0],
+      titlefont: {
+        color: config.textColour
+      },
+      backgroundcolor: '#000000',
+      showbackground: true,
+      showline: true,
+      linecolor: config.textColour,
+      ticks: 'inside',
+      tickcolor: config.textColour,
+      tickfont: {
+        color: config.textColour
+      },
+      zeroline: false,
+      showgrid: config.showGrid
+    },
+    yaxis: {
+      title: _labels[1],
+      titlefont: {
+        color: config.textColour
+      },
+      backgroundcolor: '#000000',
+      showbackground: true,
+      showline: true,
+      linecolor: config.textColour,
+      ticks: 'inside',
+      tickcolor: config.textColour,
+      tickfont: {
+        color: config.textColour
+      },
+      zeroline: false,
+      showgrid: config.showGrid
+    },
+    width: $(window).width() * config.widthFactor,
+    height: $(window).height() * config.heightFactor
+  }
+}
+
+function miniLayout(_title) {
+  return {
+    title: _title,
+    plot_bgcolor: '#000000',
+    paper_bgcolor: '#000000',
+    titlefont: {
+      color: config.textColour
+    },
+    xaxis: {
+      showline: true,
+      linecolor: config.textColour,
+      ticks: 'inside',
+      tickcolor: config.textColour,
+      tickfont: {
+        color: config.textColour
+      },
+      zeroline: false,
+      showgrid: false
+    },
+    yaxis: {
+      showline: true,
+      linecolor: config.textColour,
+      ticks: 'inside',
+      tickcolor: config.textColour,
+      tickfont: {
+        color: config.textColour
+      },
+      zeroline: false,
+      showgrid: false
+    },
+    width: $(window).width() * config.widthMiniFactor,
+    height: $(window).width() * config.heightMiniFactor
+  }
 }

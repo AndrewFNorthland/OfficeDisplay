@@ -1,3 +1,5 @@
+//-------------- The Canvas is not currently used --------------
+
 var myCanvas;
 var ctx;
 

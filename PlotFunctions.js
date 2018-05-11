@@ -66,9 +66,9 @@ function mainLayout(_title, _labels) {
     titlefont: {
       color: config.textColour
     },
-    plot_bgcolor: '#000000',
-    paper_bgcolor: '#000000',
-    margin: {     
+    plot_bgcolor: '#000000',      //background of the plot
+    paper_bgcolor: '#000000',     //background of the border
+    margin: {     //setting the border thickness
       l: 75,
       r: 50,
       t: 50,
@@ -82,10 +82,10 @@ function mainLayout(_title, _labels) {
       backgroundcolor: '#000000',
       showbackground: true,
       showline: true,
-      linecolor: config.textColour,
-      ticks: 'inside',
+      linecolor: config.textColour,     //axis line
+      ticks: 'inside',      //ticks on axis line
       tickcolor: config.textColour,
-      tickfont: {
+      tickfont: {     //numbers on the ticks
         color: config.textColour
       },
       zeroline: false,
@@ -131,6 +131,7 @@ function miniLayout(_title, selected) {
       t: 25,
       b: 25
     },
+    showlegend: false,
     titlefont: {
       color: selected
     },

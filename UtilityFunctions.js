@@ -8,7 +8,7 @@ function instantiate() {
     displayPlot(data[i][0], data[i][1], "Test" + i, ["X-Axis", "Y-Axis"], false, i);
   }
 
-  createCanvasOverlay();
+  // createCanvasOverlay();
 }
 
 //Redraws the plots to update their data, also used to set which dataset goes to the main plot
@@ -16,9 +16,9 @@ function redraw(selected) {
   displayPlot(selectedData.x1, selectedData.y1, "Hello", ["Test1", "Test2"], true, 'main', false, selectedData.x2, selectedData.y2);
   for (var i = 0; i < data.length && i < config.maxMinis; i++) {
     if (i == selected)
-      displayPlot(data[i][0], data[i][1], "Test" + i, ["X-Axis", "Y-Axis"], false, i, true);
+      displayPlot(data[i][0], data[i][1], "Test" + i, ["X-Axis", "Y-Axis"], false, i, true, data[i][1], data[i][0]);
     else
-      displayPlot(data[i][0], data[i][1], "Test" + i, ["X-Axis", "Y-Axis"], false, i);
+      displayPlot(data[i][0], data[i][1], "Test" + i, ["X-Axis", "Y-Axis"], false, i, false, data[i][1], data[i][0]);
   }
 }
 

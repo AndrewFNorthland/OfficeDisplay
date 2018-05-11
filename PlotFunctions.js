@@ -1,75 +1,3 @@
-var miniReduced = false;
-var mainReduced = false;
-
-//Reduces the size of the main container (won't affect plot visual if only called once)
-function reduceMainSize() {
-  var plotContainers = document.getElementsByClassName("svg-container");
-
-  var dim = getContainerDim(0, plotContainers);
-  if (!mainReduced) {
-    plotContainers[0].style.cssText = "position: relative; width: " + dim[0] * config.reductionFactor + "px; height: " + dim[1] + "px;";
-  }
-  mainReduced = true;
-}
-
-//Reduces the size of all mini containers (won't affect plot visual if only called once)
-function reduceMiniSize() {
-  var plotContainers = document.getElementsByClassName("svg-container");
-
-  var dim = getContainerDim(1, plotContainers);
-
-  if (!miniReduced) {
-    for (var i = 1; i < plotContainers.length; i++) {
-      plotContainers[i].style.cssText = "position: relative; width: " + dim[0] * config.reductionFactor + "px; height: " + dim[1] + "px;";
-    }
-  }
-  miniReduced = true;
-}
-
-/*
-Gets the dimensions of the container of a certain plot
-Parameters:
-  plot - the plot number to get (0 = main, 1 = leftmost mini, 2 = second leftmost mini)
-  plotContainers - an array of the plot containers found with document.getElementsByClassName("svg-container")
-*/
-function getContainerDim(plot, plotContainers) {
-  var dim = [];
-
-  var num = "";
-  var i = 27;
-  var a = plotContainers[plot].style.cssText.charAt(i);
-  while (a >= '0' && a <= '9') {
-    num += a;
-    a = plotContainers[plot].style.cssText.charAt(++i);
-  }
-  dim.push(parseInt(num));
-
-  num = "";
-  while (plotContainers[plot].style.cssText.charAt(i) < '0' || plotContainers[plot].style.cssText.charAt(i) > '9') {
-    i++;
-  }
-  a = plotContainers[plot].style.cssText.charAt(i);
-  while (a >= '0' && a <= '9') {
-    num += a;
-    a = plotContainers[plot].style.cssText.charAt(++i);
-  }
-  dim.push(parseInt(num));
-
-  return dim;
-}
-
-//Cycles through the history folder on the ftp server (just a test function for image display and local access)
-function cycleHistory() {
-  var day = new Date();
-  var months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-
-  setInterval(function() {
-    day.setTime(day.getTime() - 86400000);
-    document.getElementById("data").src = "../History/SolarPlot" + day.getFullYear() + months[day.getMonth()] + day.getDate() + ".png";
-    console.log(day.getFullYear() + months[day.getMonth()] + day.getDate());
-  }, 2000);
-}
-
 /*
 Generates and displays a graph for power or energy outputs.
 Parameters:
@@ -77,12 +5,13 @@ Parameters:
   _y1 - an array of unnormalized y values, often corresponding to power or energy in this context (actuals)
   _title - the title of the graph
   _labels - an array of the axis labels where index 0 is x-axis and index 1 is y-axis
-  update - true or false, whether this function is updating a graph or creating it
+  update - boolean, whether this function is updating a graph or creating it
   mini - the index of the mini graph this one is, set to -1 to set as main graph
+  selected - boolean, true if this is the mini selected to be displayed as main
   _x2 - an array of unnormalized x values, often corresponding to a daily or monthly time in this context (expected)
   _y2 - an array of unnormalized y values, often corresponding to power or energy in this context (expected)
 */
-function displayGraph(_x1, _y1, _title, _labels, update, mini, _x2, _y2) {
+function displayPlot(_x1, _y1, _title, _labels, update, mini, selected, _x2, _y2) {
   if (mini < 0 || mini > 9 || mini === undefined)     //Determining if creating a mini graph or not
     mini = 'main';
   else
@@ -92,19 +21,21 @@ function displayGraph(_x1, _y1, _title, _labels, update, mini, _x2, _y2) {
   var set1 = {      //must be used as an array in Plotly.newPlot (even if only dataset)
     x: _x1,
     y: _y1,
-    type: 'scatter',
     mode: 'lines',
-    hoverinfo: 'none'
+    type: 'scatter',
+    hoverinfo: 'none',
+    name: 'Actual'
   }
 
   var set2;
   if (_x2) {      //only setting set2 if there is data for it
-    set2 = {      //must be used as an array in Plotly.newPlot (even if only dataset)
+    set2 = {
       x: _x2,
       y: _y2,
       type: 'scatter',
       mode: 'lines',
-      hoverinfo: 'none'
+      hoverinfo: 'none',
+      name: 'Expected'
     }
   }
 
@@ -118,7 +49,7 @@ function displayGraph(_x1, _y1, _title, _labels, update, mini, _x2, _y2) {
   if (mini == "main") {
     layout = mainLayout(_title, _labels);
   } else {
-    layout = miniLayout(_title);
+    layout = miniLayout(_title, selected);
   }
 
   if (update) {
@@ -128,6 +59,7 @@ function displayGraph(_x1, _y1, _title, _labels, update, mini, _x2, _y2) {
   }
 }
 
+//Returns the layout for the main graph, everything here is optimized to display with our setup
 function mainLayout(_title, _labels) {
   return {
     title: _title,
@@ -136,11 +68,11 @@ function mainLayout(_title, _labels) {
     },
     plot_bgcolor: '#000000',
     paper_bgcolor: '#000000',
-    margin: {
+    margin: {     
       l: 75,
       r: 50,
       t: 50,
-      b: 50
+      b: 75
     },
     xaxis: {
       title: _labels[0],
@@ -181,32 +113,45 @@ function mainLayout(_title, _labels) {
   }
 }
 
-function miniLayout(_title) {
+//Returns the layout for the mini graph, everything here is optimized to display with our setup
+function miniLayout(_title, selected) {
+  if (selected == true) {
+    selected = '#FF0000';
+  } else {
+    selected = config.textColour;
+  }
+
   return {
     title: _title,
     plot_bgcolor: '#000000',
     paper_bgcolor: '#000000',
+    margin: {
+      l: 25,
+      r: 25,
+      t: 25,
+      b: 25
+    },
     titlefont: {
-      color: config.textColour
+      color: selected
     },
     xaxis: {
       showline: true,
-      linecolor: config.textColour,
+      linecolor: selected,
       ticks: 'inside',
-      tickcolor: config.textColour,
+      tickcolor: selected,
       tickfont: {
-        color: config.textColour
+        color: selected
       },
       zeroline: false,
       showgrid: false
     },
     yaxis: {
       showline: true,
-      linecolor: config.textColour,
+      linecolor: selected,
       ticks: 'inside',
-      tickcolor: config.textColour,
+      tickcolor: selected,
       tickfont: {
-        color: config.textColour
+        color: selected
       },
       zeroline: false,
       showgrid: false
@@ -214,4 +159,82 @@ function miniLayout(_title) {
     width: $(window).width() * config.widthMiniFactor,
     height: $(window).width() * config.heightMiniFactor
   }
+}
+
+//------------------- LEGACY FUNCTIONS -------------- (They are no longer used)
+
+var miniReduced = false;
+var mainReduced = false;
+
+//Reduces the size of the main container (won't affect plot visual if only called once)
+//--------------------------LEGACY FUNCTION, NO LONGER USED---------------------------------------
+function reduceMainSize() {
+  var plotContainers = document.getElementsByClassName("svg-container");
+
+  var dim = getContainerDim(0, plotContainers);
+  if (!mainReduced) {
+    plotContainers[0].style.cssText = "position: relative; width: " + dim[0] * config.reductionFactor + "px; height: " + dim[1] + "px;";
+  }
+  mainReduced = true;
+}
+
+//Reduces the size of all mini containers (won't affect plot visual if only called once)
+//--------------------------LEGACY FUNCTION, NO LONGER USED---------------------------------------
+function reduceMiniSize() {
+  var plotContainers = document.getElementsByClassName("svg-container");
+
+  var dim = getContainerDim(1, plotContainers);
+
+  if (!miniReduced) {
+    for (var i = 1; i < plotContainers.length; i++) {
+      plotContainers[i].style.cssText = "position: relative; width: " + dim[0] * config.reductionFactor + "px; height: " + dim[1] + "px;";
+    }
+  }
+  miniReduced = true;
+}
+
+/*
+Gets the dimensions of the container of a certain plot
+Parameters:
+  plot - the plot number to get (0 = main, 1 = leftmost mini, 2 = second leftmost mini)
+  plotContainers - an array of the plot containers found with document.getElementsByClassName("svg-container")
+*/
+//--------------------------LEGACY FUNCTION, NO LONGER USED---------------------------------------
+function getContainerDim(plot, plotContainers) {
+  var dim = [];
+
+  var num = "";
+  var i = 27;
+  var a = plotContainers[plot].style.cssText.charAt(i);
+  while (a >= '0' && a <= '9') {
+    num += a;
+    a = plotContainers[plot].style.cssText.charAt(++i);
+  }
+  dim.push(parseInt(num));
+
+  num = "";
+  while (plotContainers[plot].style.cssText.charAt(i) < '0' || plotContainers[plot].style.cssText.charAt(i) > '9') {
+    i++;
+  }
+  a = plotContainers[plot].style.cssText.charAt(i);
+  while (a >= '0' && a <= '9') {
+    num += a;
+    a = plotContainers[plot].style.cssText.charAt(++i);
+  }
+  dim.push(parseInt(num));
+
+  return dim;
+}
+
+//Cycles through the history folder on the ftp server (just a test function for image display and local access)
+//--------------------------LEGACY FUNCTION, NO LONGER USED---------------------------------------
+function cycleHistory() {
+  var day = new Date();
+  var months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
+  setInterval(function() {
+    day.setTime(day.getTime() - 86400000);
+    document.getElementById("data").src = "../History/SolarPlot" + day.getFullYear() + months[day.getMonth()] + day.getDate() + ".png";
+    console.log(day.getFullYear() + months[day.getMonth()] + day.getDate());
+  }, 2000);
 }

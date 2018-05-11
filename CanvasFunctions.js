@@ -1,7 +1,7 @@
 var myCanvas;
 var ctx;
 
-//Creates the canvas for drawing on top of things
+//Creates the canvas for drawing on top of things (used to draw selection rectangle)
 function createCanvasOverlay() {
   myCanvas = document.createElement('canvas');
   document.body.appendChild(myCanvas);
@@ -30,17 +30,19 @@ function selectDraw(miniPlot) {
 
   clearCanvas();
 
-  var yPos = $(window).height() * (1 - 2 * config.heightMiniFactor);
-  var height = $(window).height() * (1.75 * config.heightMiniFactor);
+  // var yPos = $(window).height() * (1 - 2.75 * config.heightMiniFactor);
+  var height = $(window).height() * (2.5 * config.heightMiniFactor);
   var width;
   if (!miniReduced)
     width = $(window).width() * config.widthMiniFactor;
   else
     width = $(window).width() * config.widthMiniFactor * config.reductionFactor;
 
+  var pos = $('#'+miniPlot).position();
 
   ctx.beginPath();
   ctx.strokeStyle="red";
-  ctx.rect(miniPlot * width, yPos, width, height);
+  // ctx.rect(miniPlot * width, yPos, width, height);
+  ctx.rect(pos.left, pos.top, width, height);
   ctx.stroke();
 }

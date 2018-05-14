@@ -1,4 +1,4 @@
-//-------------- The Canvas is not currently used --------------
+//-------------- The Canvas is only used for text overlay --------------
 
 var myCanvas;
 var ctx;
@@ -25,6 +25,38 @@ function clearCanvas() {
   ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
 }
 
+function displayInfo(selected) {
+  for (var i = 5; i < data[selected].length; i++) {
+    var text = "";
+    for (var j = 0; j < data[selected][i].length; j++) {
+      text += data[selected][i][j];
+    }
+    drawText(text, width() / 2.5,  getFontSize() * (i-4) + (i-5)*3);
+  }
+}
+
+/*
+A function to draw text on top of everything
+Parameters:
+  text - The text to draw
+  x - The window's x-coordinate to draw
+  y - The window's y-coordinate to draw
+*/
+function drawText(text, x, y) {
+    if (!ctx)
+      ctx = myCanvas.getContext("2d");
+
+    ctx.font = getFontSize() + "px Arial";
+    ctx.fillStyle = "white";
+    ctx.fillText(text, x, y);
+}
+
+function getFontSize() {
+  return Math.round(height()/config.fontReduction);
+}
+
+
+//----------------LEGACY FUNCTION (Not used anymore)-----------------------
 //Draws the selection of a mini plot to display as the main
 function selectDraw(miniPlot) {
   if (!ctx)
@@ -33,12 +65,12 @@ function selectDraw(miniPlot) {
   clearCanvas();
 
   // var yPos = $(window).height() * (1 - 2.75 * config.heightMiniFactor);
-  var height = $(window).height() * (2.5 * config.heightMiniFactor);
+  var height = height() * (2.5 * config.heightMiniFactor);
   var width;
   if (!miniReduced)
-    width = $(window).width() * config.widthMiniFactor;
+    width = width() * config.widthMiniFactor;
   else
-    width = $(window).width() * config.widthMiniFactor * config.reductionFactor;
+    width = width() * config.widthMiniFactor * config.reductionFactor;
 
   var pos = $('#'+miniPlot).position();
 

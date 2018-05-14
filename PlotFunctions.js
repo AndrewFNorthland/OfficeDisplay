@@ -1,3 +1,10 @@
+
+/*
+-------------LIBRARY BEING USED IS PLOTLY.JS-------------
+Reference: https://plot.ly/javascript/reference/
+Examples: https://plot.ly/javascript/line-charts/
+*/
+
 /*
 Generates and displays a graph for power or energy outputs.
 Parameters:
@@ -40,12 +47,12 @@ function displayPlot(_x1, _y1, _title, _labels, update, mini, selected, _x2, _y2
   }
 
   var data;      //The array of all datasets for the current graph
-  if (set2)     //only putting set2 into the data array if it exists
+  if (set2)     //Only putting set2 into the data array if it exists
     data = [set1, set2];
   else
     data = [set1];
 
-  var layout;
+  var layout;     //The template for each kind of plot, created in functions below
   if (mini == "main") {
     layout = mainLayout(_title, _labels);
   } else {
@@ -53,9 +60,9 @@ function displayPlot(_x1, _y1, _title, _labels, update, mini, selected, _x2, _y2
   }
 
   if (update) {
-    Plotly.react(mini, data, layout);
+    Plotly.react(mini, data, layout);     //To update a plot (more computationaly efficient)
   } else {
-    Plotly.newPlot(mini, data, layout);
+    Plotly.newPlot(mini, data, layout);     //To create a new plot (only used on startup)
   }
 }
 
@@ -66,8 +73,8 @@ function mainLayout(_title, _labels) {
     titlefont: {
       color: config.textColour
     },
-    plot_bgcolor: '#000000',      //background of the plot
-    paper_bgcolor: '#000000',     //background of the border
+    plot_bgcolor: config.bgColour,      //background of the plot
+    paper_bgcolor: config.bgColour,     //background of the border
     margin: {     //setting the border thickness
       l: 75,
       r: 50,
@@ -79,7 +86,8 @@ function mainLayout(_title, _labels) {
       titlefont: {
         color: config.textColour
       },
-      backgroundcolor: '#000000',
+      range: [0, 24],
+      backgroundcolor: config.bgColour,
       showbackground: true,
       showline: true,
       linecolor: config.textColour,     //axis line
@@ -96,7 +104,8 @@ function mainLayout(_title, _labels) {
       titlefont: {
         color: config.textColour
       },
-      backgroundcolor: '#000000',
+      range: [0, config.yRange],
+      backgroundcolor: config.bgColour,
       showbackground: true,
       showline: true,
       linecolor: config.textColour,
@@ -108,23 +117,23 @@ function mainLayout(_title, _labels) {
       zeroline: false,
       showgrid: config.showGrid
     },
-    width: $(window).width() * config.widthFactor,
-    height: $(window).height() * config.heightFactor
+    width: width() * config.widthFactor,
+    height: height() * config.heightFactor
   }
 }
 
 //Returns the layout for the mini graph, everything here is optimized to display with our setup
 function miniLayout(_title, selected) {
   if (selected == true) {
-    selected = '#FF0000';
+    selected = config.selectedColour;
   } else {
     selected = config.textColour;
   }
 
   return {
     title: _title,
-    plot_bgcolor: '#000000',
-    paper_bgcolor: '#000000',
+    plot_bgcolor: config.bgColour,
+    paper_bgcolor: config.bgColour,
     margin: {
       l: 25,
       r: 25,
@@ -136,6 +145,7 @@ function miniLayout(_title, selected) {
       color: selected
     },
     xaxis: {
+      range: [0, 24],
       showline: true,
       linecolor: selected,
       ticks: 'inside',
@@ -147,6 +157,7 @@ function miniLayout(_title, selected) {
       showgrid: false
     },
     yaxis: {
+      range: [0, config.yRange],
       showline: true,
       linecolor: selected,
       ticks: 'inside',
@@ -157,8 +168,8 @@ function miniLayout(_title, selected) {
       zeroline: false,
       showgrid: false
     },
-    width: $(window).width() * config.widthMiniFactor,
-    height: $(window).width() * config.heightMiniFactor
+    width: width() * config.widthMiniFactor,
+    height: width() * config.heightMiniFactor
   }
 }
 

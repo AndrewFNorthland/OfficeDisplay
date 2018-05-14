@@ -1,17 +1,21 @@
 //Configuration variables
 var config = {
-  maxMinis: 100,      //The maximum number of mini plots wanted to be displayed (will not scale when lower than 5)
-  showGrid: false,      //Choose whether to show the grid on the graph
-  heightFactor: 0.8,     //The percentage of the height the main graph will occupy
-  widthFactor: 0.6,      //The percentage of the width the main graph will occupy
-  widthMiniFactor: 0.105,      //The percentage of the height a mini graph will occupy
-  heightMiniFactor: 0.075,     //The percentage of the width a mini graph will occupy
+  maxMinis: 10,      //The maximum number of mini plots wanted to be displayed (will not scale when lower than 5)
+  showGrid: false,      //Choose whether to show the grid on the plot
+  heightFactor: 0.8,     //The percentage of the height the main plot will occupy
+  widthFactor: 0.6,      //The percentage of the width the main plot will occupy
+  widthMiniFactor: 0.105,      //The percentage of the height a mini plot will occupy
+  heightMiniFactor: 0.075,     //The percentage of the width a mini plot will occupy
   reductionFactor: 0.85,      //The percentage to reduce containers
   defaultSelectionTimer: 1000,     //The default time the selection interval will wait before swithing
-  textColour: '#ffffff',     //The colour of text and axis in graphs
+  textColour: '#ffffff',     //The colour of text and axis in plots       Colours in HTML: #RRGGBB (RR = amount of red in hexadecimal, GG = green... BB = blue...)
+  bgColour: '#000000',      //The colour of the background of plots
+  selectedColour: '#ff0000',      //The colour of the selected mini plot
   clearOnStop: true,     //Boolean, chooses whether or not to clear the selection rectangle on stopSelection
   miniLabels: ["Time", "Power"],     //Labels for the mini plot
-  mainLabels: ["Time of Day (min)", "Power (MW)"]     //Labels for the main plot
+  mainLabels: ["Time of Day (hr)", "Power (MW)"],     //Labels for the main plot
+  fontReduction: 53,     //The divisor to scale text according to window height
+  yRange: 15      //The definite range the y-axis will be set to
 };
 
 
@@ -28,43 +32,4 @@ var data = liveData;
 
 instantiate();
 startSelection();
-
-
-// data = [
-//   [
-//     [1, 2, 3, 4, 5],
-//     [5, 4, 3, 2, 1]
-//   ],
-//   [
-//     [3, 4, 5, 1, 2],
-//     [2, 1, 3, 4, 5]
-//   ],
-//   [
-//     [5, 1, 2, 4, 3],
-//     [1, 2, 3, 4, 5]
-//   ],
-//   [
-//     [3, 5, 1, 2, 4],
-//     [1, 5, 2, 4, 3]
-//   ],
-//   [
-//     [3, 5, 1, 2, 4],
-//     [1, 5, 2, 4, 3]
-//   ],
-//   [
-//     [3, 5, 1, 2, 4],
-//     [1, 5, 2, 4, 3]
-//   ],
-//   [
-//     [3, 5, 1, 2, 4],
-//     [1, 5, 2, 4, 3]
-//   ],
-//   [
-//     [3, 5, 1, 2, 4],
-//     [1, 5, 2, 4, 3]
-//   ],
-//   [
-//     [3, 5, 1, 2, 4],
-//     [1, 5, 2, 4, 3]
-//   ]
-// ];
+displayInfo(selected);

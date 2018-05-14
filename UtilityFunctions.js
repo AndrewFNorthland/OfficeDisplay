@@ -3,9 +3,9 @@ var selectionInterval;
 //The primary initialization for the Plots and Canvas
 //Required to run at beginning of program
 function instantiate() {
-  displayPlot(selectedData.x, selectedData.y, "Testing", ["X-Axis", "Y-Axis"], false);
+  displayPlot(selectedData.x, selectedData.y, "Site: ", config.mainLabels, false, 'main', selectedData.x2, selectedData.y2);
   for (var i = 0; i < data.length && i < config.maxMinis; i++) {
-    displayPlot(data[i][0], data[i][1], "Test" + i, ["X-Axis", "Y-Axis"], false, i);
+    displayPlot(data[i][0], data[i][1], "Test" + i, config.miniLabels, false, i, selectedData.x2, selectedData.y2);
   }
 
   // createCanvasOverlay();
@@ -13,12 +13,9 @@ function instantiate() {
 
 //Redraws the plots to update their data, also used to set which dataset goes to the main plot
 function redraw(selected) {
-  displayPlot(selectedData.x1, selectedData.y1, "Hello", ["Test1", "Test2"], true, 'main', false, selectedData.x2, selectedData.y2);
+  displayPlot(selectedData.x1, selectedData.y1, "SITE_NAME", config.mainLabels, true, 'main', false, selectedData.x2, selectedData.y2);
   for (var i = 0; i < data.length && i < config.maxMinis; i++) {
-    if (i == selected)
-      displayPlot(data[i][0], data[i][1], "Test" + i, ["X-Axis", "Y-Axis"], false, i, true, data[i][1], data[i][0]);
-    else
-      displayPlot(data[i][0], data[i][1], "Test" + i, ["X-Axis", "Y-Axis"], false, i, false, data[i][1], data[i][0]);
+    displayPlot(data[i][0], data[i][1], "SITE_NAME_" + i, config.miniLabels, false, i, i == selected, selectedData.x2, selectedData.y2);
   }
 }
 
@@ -32,10 +29,11 @@ function startSelection(time) {
     time = config.defaultSelectionTimer;
 
   selectionInterval = setInterval(function() {
+    data = liveData;
     selectedData.x1 = data[selected][0];
     selectedData.y1 = data[selected][1];
-    selectedData.x2 = data[selected][1];
-    selectedData.y2 = data[selected][0];
+    selectedData.x2 = data[selected][2];
+    selectedData.y2 = data[selected][3];
 
     // selectDraw(selected);
     redraw(selected);

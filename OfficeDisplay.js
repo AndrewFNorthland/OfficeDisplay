@@ -18,7 +18,8 @@ var config = {
   miniLabels: ["Time", "Power"],     //Labels for the mini plot
   mainLabels: ["Time of Day (hr)", "Power (MW)"],     //Labels for the main plot
   yRange: 10,      //The definite range the y-axis will be set to
-  numStates: 3      //The number of different types of power plant groups (3 right now, Phase 1 and 2, Phase 3 (Cochrane), and Wind)
+  numStates: 3,      //The number of different types of power plant groups (3 right now, Phase 1 and 2, Phase 3 (Cochrane), and Wind)
+  stateNames: ['solarData', 'cochraneData', 'windData']     //A lookup to get the state name
 };
 
 //Which power plants are being displayed
@@ -37,4 +38,3 @@ cochraneData = [];
 
 instantiate();
 startSelection();
-displayInfo(selected);

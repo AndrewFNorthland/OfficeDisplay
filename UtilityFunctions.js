@@ -36,14 +36,8 @@ function startSelection(time) {
   selectionInterval = setInterval(function() {
     selected++;
     if (selected >= data.length) {
-      do {
-        selected = 0;
-        state++;
-        state %= config.numStates;
-        data = getData();
-      } while(!dataDefined());
-      clearAllMinis();
-      createPlots(false);
+      nextState();
+      reloadData(config.stateNames[state]);
     }
 
     data = getData();
@@ -61,6 +55,18 @@ function startSelection(time) {
   }, time);
 }
 
+//Advances to the next state (next window)
+function nextState() {
+  do {
+    selected = 0;
+    state++;
+    state %= config.numStates;
+    data = getData();
+  } while(!dataDefined());
+  clearAllMinis();
+  createPlots(false);
+}
+
 //Returns the correct data based on the state
 function getData() {
   if (state == 0)
@@ -73,6 +79,18 @@ function getData() {
   return solarData;     //Default
 }
 
+//Reloads the json file into the browser to have most up-to-date data.
+function reloadData(dataFile) {
+  document.getElementById(dataFile).remove();
+
+  var body = document.getElementsByTagName('body')[0];
+  var json = document.createElement('script');
+  json.src = dataFile + '.json';
+  json.id = dataFile;
+  body.appendChild(json);
+}
+
+//Checks if the data recieved is defined and usable
 function dataDefined() {
   if (data[selected] == undefined)
     return false;

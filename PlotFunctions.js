@@ -66,6 +66,12 @@ function displayPlot(_x1, _y1, _title, _labels, update, mini, selected, _x2, _y2
   }
 }
 
+function clearAllMinis() {
+  for (var i = 0; i < config.maxMinis; i++) {
+    Plotly.purge('' + i);
+  }
+}
+
 //Returns the layout for the main graph, everything here is optimized to display with our setup
 function mainLayout(_title, _labels) {
   return {

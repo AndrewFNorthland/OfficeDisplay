@@ -1,9 +1,10 @@
-
 /*
 -------------LIBRARY BEING USED IS PLOTLY.JS-------------
 Reference: https://plot.ly/javascript/reference/
 Examples: https://plot.ly/javascript/line-charts/
 */
+
+var yRange = 10;      //The y-axis range
 
 /*
 Generates and displays a graph for power or energy outputs.
@@ -110,7 +111,7 @@ function mainLayout(_title, _labels) {
       titlefont: {
         color: config.textColour
       },
-      range: [0, config.yRange],
+      range: [0, yRange],
       backgroundcolor: config.bgColour,
       showbackground: true,
       showline: true,
@@ -163,7 +164,7 @@ function miniLayout(_title, selected) {
       showgrid: false
     },
     yaxis: {
-      range: [0, config.yRange],
+      range: [0, yRange],
       showline: true,
       linecolor: selected,
       ticks: 'inside',

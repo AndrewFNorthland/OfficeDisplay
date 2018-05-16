@@ -18,6 +18,8 @@ function createPlots(main) {
 
 //Redraws the plots to update their data, also used to set which dataset goes to the main plot
 function redraw(selected) {
+  setYAxis();
+
   displayPlot(selectedData.x1, selectedData.y1, data[selected][0][0], config.mainLabels, true, 'main', false, selectedData.x2, selectedData.y2);
   for (var i = 0; i < data.length && i < config.maxMinis; i++) {
     displayPlot(data[i][1], data[i][2], data[i][0][0], config.miniLabels, true, i, i == selected, data[i][3], data[i][4]);
@@ -96,6 +98,16 @@ function dataDefined() {
     return false;
   else
     return true;
+}
+
+function setYAxis() {
+  var p = data[selected][0][1];
+  if (p == "Solar")
+    yRange = config.yRanges[0];
+  else if (p == "Wind")
+    yRange = config.yRanges[1];
+  else
+    yRange = config.yRanges[0];
 }
 
 //Stops the selection cycle

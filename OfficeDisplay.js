@@ -11,13 +11,13 @@ var config = {
   clearOnStop: false,     //Boolean, chooses whether or not to clear the selection rectangle on stopSelection
 
   //-------------Variables you will probably care about---------------
-  defaultSelectionTimer: 1000,     //The default time the selection interval will wait before swithing, in milliseconds
+  defaultSelectionTimer: 3000,     //The default time the selection interval will wait before swithing, in milliseconds
   textColour: '#ffffff',     //The colour of text and axis in plots       Colours in HTML: #RRGGBB (RR = amount of red in hexadecimal, GG = green... BB = blue...)
   bgColour: '#000000',      //The colour of the background of plots
   selectedColour: '#ff0000',      //The colour of the selected mini plot
   miniLabels: ["Time", "Power"],     //Labels for the mini plot
   mainLabels: ["Time of Day (hr)", "Power (MW)"],     //Labels for the main plot
-  yRange: 10,      //The definite range the y-axis will be set to
+  yRanges: [10, 140],      //The definite range the y-axis will be set to: [Solar, Wind]
   numStates: 3,      //The number of different types of power plant groups (3 right now, Phase 1 and 2, Phase 3 (Cochrane), and Wind)
   stateNames: ['solarData', 'cochraneData', 'windData']     //A lookup to get the state name
 };

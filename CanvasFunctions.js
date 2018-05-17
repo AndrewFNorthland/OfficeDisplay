@@ -25,13 +25,14 @@ function clearCanvas() {
   ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
 }
 
+//Collects the info to display on the top right of the graph from the data variable
 function displayInfo(selected) {
-  for (var i = 5; i < data[selected].length; i++) {
+  for (var i = config.linesReserved; i < data[selected].length; i++) {
     var text = "";
     for (var j = 0; j < data[selected][i].length; j++) {
       text += data[selected][i][j];
     }
-    drawText(text, width() / 2.5,  getFontSize() * (i-4) + (i-5)*3);
+    drawText(text, width() / 2.5,  getFontSize() * (i-config.linesReserved+1) + (i-config.linesReserved)*3);
   }
 }
 

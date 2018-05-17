@@ -20,7 +20,8 @@ function createPlots(main) {
 function redraw(selected) {
   setYAxis();
 
-  displayPlot(selectedData.x1, selectedData.y1, data[selected][0][0], config.mainLabels, true, 'main', false, selectedData.x2, selectedData.y2);
+  mainLabels = [data[selected][1][0], data[selected][2][0], data[selected][6][0]];
+  displayPlot(selectedData.x1, selectedData.y1, data[selected][0][0], mainLabels, true, 'main', false, selectedData.x2, selectedData.y2, selectedData.x3, selectedData.y3);
   for (var i = 0; i < data.length && i < config.maxMinis; i++) {
     displayPlot(data[i][1], data[i][2], data[i][0][0], config.miniLabels, true, i, i == selected, data[i][3], data[i][4]);
   }
@@ -39,7 +40,8 @@ function startSelection(time) {
     selected++;
     if (selected >= data.length) {
       nextState();
-      reloadData(config.stateNames[state]);
+      for (var i = 0; i < config.stateNames.length; i++)
+        reloadData(config.stateNames[i]);
     }
 
     data = getData();
@@ -47,6 +49,8 @@ function startSelection(time) {
     selectedData.y1 = data[selected][2];
     selectedData.x2 = data[selected][3];
     selectedData.y2 = data[selected][4];
+    selectedData.x3 = data[selected][5];
+    selectedData.y3 = data[selected][6];
 
     // selectDraw(selected);
     redraw(selected);
@@ -74,10 +78,7 @@ function getData() {
   if (state == 0)
     return solarData;
   else if (state == 1)
-    return cochraneData;
-  else if (state == 2) {
     return windData;
-  }
   return solarData;     //Default
 }
 
@@ -101,13 +102,8 @@ function dataDefined() {
 }
 
 function setYAxis() {
-  var p = data[selected][0][1];
-  if (p == "Solar")
-    yRange = config.yRanges[0];
-  else if (p == "Wind")
-    yRange = config.yRanges[1];
-  else
-    yRange = config.yRanges[0];
+  yRange = data[selected][0][1];
+  yRange2 = data[selected][0][2];
 }
 
 //Stops the selection cycle

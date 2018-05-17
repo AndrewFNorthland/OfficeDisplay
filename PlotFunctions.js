@@ -5,6 +5,7 @@ Examples: https://plot.ly/javascript/line-charts/
 */
 
 var yRange = 10;      //The y-axis range
+var yRange2 = 14;     //The second y-axis range
 
 /*
 Generates and displays a graph for power or energy outputs.
@@ -18,8 +19,10 @@ Parameters:
   selected - boolean, true if this is the mini selected to be displayed as main
   _x2 - an array of unnormalized x values, often corresponding to a daily or monthly time in this context (expected)
   _y2 - an array of unnormalized y values, often corresponding to power or energy in this context (expected)
+  _x3 - an array of unnormalized x values, time of day (displayed on y-axis 2)
+  _y3 - an array of unnormalized y values, number of active power producers (displayed on y-axis 2)
 */
-function displayPlot(_x1, _y1, _title, _labels, update, mini, selected, _x2, _y2) {
+function displayPlot(_x1, _y1, _title, _labels, update, mini, selected, _x2, _y2, _x3, _y3) {
   if (mini < 0 || mini > 9 || mini === undefined)     //Determining if creating a mini graph or not
     mini = 'main';
   else
@@ -35,7 +38,7 @@ function displayPlot(_x1, _y1, _title, _labels, update, mini, selected, _x2, _y2
     name: 'Actual'
   }
 
-  var set2;
+  var set2, set3;
   if (_x2) {      //only setting set2 if there is data for it
     set2 = {
       x: _x2,
@@ -44,13 +47,26 @@ function displayPlot(_x1, _y1, _title, _labels, update, mini, selected, _x2, _y2
       mode: 'lines',
       hoverinfo: 'none',
       name: 'Expected'
-    }
+    };
+  }
+  if (_x3) {
+    set3 = {
+      x: _x3,
+      y: _y3,
+      type: 'scatter',
+      mode: 'lines',
+      hoverinfo: 'none',
+      name: _labels[2],
+      yaxis: 'y2'
+    };
   }
 
   var data;      //The array of all datasets for the current graph
-  if (set2)     //Only putting set2 into the data array if it exists
+  if (set2) {    //Only putting set2 into the data array if it exists
     data = [set1, set2];
-  else
+    if (set3)
+      data = [set1, set2, set3];
+  } else
     data = [set1];
 
   var layout;     //The template for each kind of plot, created in functions below
@@ -123,6 +139,26 @@ function mainLayout(_title, _labels) {
       },
       zeroline: false,
       showgrid: config.showGrid
+    },
+    yaxis2: {
+      title: _labels[2],
+      titlefont: {
+        color: config.textColour
+      },
+      range: [0, yRange2],
+      backgroundcolor: config.bgColour,
+      showbackground: true,
+      showline: true,
+      linecolor: config.textColour,
+      ticks: 'inside',
+      tickcolor: config.textColour,
+      tickfont: {
+        color: config.textColour
+      },
+      zeroline: false,
+      showgrid: config.showGrid,
+      overlaying: 'y',
+      side: 'right'
     },
     width: width() * config.widthFactor,
     height: height() * config.heightFactor

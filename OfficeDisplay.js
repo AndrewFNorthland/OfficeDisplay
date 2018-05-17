@@ -16,11 +16,12 @@ var config = {
   bgColour: '#000000',      //The colour of the background of plots
   selectedColour: '#ff0000',      //The colour of the selected mini plot
   miniLabels: ["Time", "Power"],     //Labels for the mini plot
-  mainLabels: ["Time of Day (hr)", "Power (MW)"],     //Labels for the main plot
-  yRanges: [10, 140],      //The definite range the y-axis will be set to: [Solar, Wind]
-  numStates: 3,      //The number of different types of power plant groups (3 right now, Phase 1 and 2, Phase 3 (Cochrane), and Wind)
-  stateNames: ['solarData', 'cochraneData', 'windData']     //A lookup to get the state name
+  mainLabels: ["Time of Day (hr)", "Power (MW)"],     //Labels for the main plot (OVERWRITTEN BY INCOMING DATA)
+  linesReserved: 7,     //The lines reserved in the data files for incoming plotting data
+  stateNames: ['solarData', 'windData'],      //A lookup to get the state name
+  numStates: 2      //The number of different types of power plant groups (2 right now, Phase 1 and 2 and Wind)
 };
+config.numStates = config.stateNames.length;
 
 //Which power plants are being displayed
 var state = 0; //0 = Phase 1 and 2 (Solar), 1 = Cochrane Plants (Solar), 2 = Wind
